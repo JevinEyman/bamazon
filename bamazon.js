@@ -23,12 +23,12 @@ function findItem() {
     .prompt({
       name: "action",
       type: "list",
-      message: "What would you like to buy?",
+      message: "Where would you like to start?",
       choices: [
         "Shop by department",
         "Shop by price",
-        "Search by product name",
-        "Search for items in stock"
+        "Search for items in stock",
+
       ]
     })
     .then(function(answer) {
@@ -38,15 +38,11 @@ function findItem() {
           break;
 
         case "Shop by price":
-          multiSearch();
-          break;
-
-        case "Search by product name":
-          rangeSearch();
+          priceSearch();
           break;
 
         case "Search for items in stock":
-          songSearch();
+          itemSearch();
           break;
       }
     });
@@ -61,91 +57,47 @@ function searchDept() {
       message: "Which department would you like to search?"
     })
     .then(function(answer) {
-      var query = "SELECT id, product, department FROM products WHERE ?";
+      var query = "SELECT id, product, department,  FROM products WHERE ?";
       connection.query(query, { department: answer. }, function(err, res) {
         for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || product: " + res[i].product + " || Year: " + res[i].year);
+          console.log("Position: " + res[i].position + " || product: " + res[i].product + " || Department: " + res[i].department + " || Price: " + res[i].price + " || Quantity: " + res[i].quantity);
         }
         findItem();
       });
     });
 }
 
-function multiSearch() {
-  var query = "SELECT artist FROM top5000 GROUP BY artist HAVING count(*) > 1";
+function priceSearch() {
+  var query = "SELECT id FROM products GROUP BY price HAVING price(*) > $.99";
   connection.query(query, function(err, res) {
     for (var i = 0; i < res.length; i++) {
-      console.log(res[i].artist);
+      console.log(res[i].product);
     }
     findItem();
   });
 }
 
-function rangeSearch() {
-  inquirer
-    .prompt([
-      {
-        name: "start",
-        type: "input",
-        message: "Enter starting position: ",
-        validate: function(value) {
-          if (isNaN(value) === false) {
-            return true;
-          }
-          return false;
-        }
-      },
-      {
-        name: "end",
-        type: "input",
-        message: "Enter ending position: ",
-        validate: function(value) {
-          if (isNaN(value) === false) {
-            return true;
-          }
-          return false;
-        }
-      }
-    ])
-    .then(function(answer) {
-      var query = "SELECT position,song,artist,year FROM top5000 WHERE position BETWEEN ? AND ?";
-      connection.query(query, [answer.start, answer.end], function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log(
-            "Position: " +
-              res[i].position +
-              " || Song: " +
-              res[i].song +
-              " || Artist: " +
-              res[i].artist +
-              " || Year: " +
-              res[i].year
-          );
-        }
-        findItem();
-      });
-    });
-}
-
-function songSearch() {
+function itemSearch() {
   inquirer
     .prompt({
-      name: "song",
+      name: "product",
       type: "input",
-      message: "What song would you like to look for?"
+      message: "What product would you like to look for?"
     })
     .then(function(answer) {
-      console.log(answer.song);
-      connection.query("SELECT * FROM top5000 WHERE ?", { song: answer.song }, function(err, res) {
+      console.log(answer.product);
+      connection.query("SELECT * FROM products WHERE ?", { product: answer.product}, function(err, res) {
         console.log(
           "Position: " +
             res[0].position +
-            " || Song: " +
-            res[0].song +
-            " || Artist: " +
-            res[0].artist +
-            " || Year: " +
-            res[0].year
+            " || Product: " +
+            res[0].product +
+            " || Department: " +
+            res[0].department +
+            " || Price: " +
+            res[0].price +
+            " || Quantity: " +
+            res[0].quantity
         );
         findItem();
       });
