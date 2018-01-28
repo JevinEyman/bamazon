@@ -1,0 +1,28 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "an app using mysql and inquirer to find products",
+  "main": "bamazon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JevinEyman/bamazon.git"
+  },
+  "keywords": [
+    "item_id",
+    "product_name",
+    "department_name"
+  ],
+  "author": "jevin eyman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JevinEyman/bamazon/issues"
+  },
+  "homepage": "https://github.com/JevinEyman/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^5.0.1",
+    "mysql": "^2.15.0"
+  }
+}
